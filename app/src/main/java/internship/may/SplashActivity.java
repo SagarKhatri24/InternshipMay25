@@ -3,9 +3,8 @@ package internship.may;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.os.Handler;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,18 +12,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class DashboardActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
 
-    TextView name;
-    Button logout;
-
+    ImageView imageView;
     SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_splash);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -33,24 +30,23 @@ public class DashboardActivity extends AppCompatActivity {
 
         sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
 
-        name = findViewById(R.id.dashboard_name);
-        name.setText("Welcome "+sp.getString(ConstantSp.NAME,""));
+        imageView = findViewById(R.id.splash_image);
 
-        logout = findViewById(R.id.dashboard_logout);
-        logout.setOnClickListener(new View.OnClickListener() {
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onClick(View view) {
-                sp.edit().clear().commit();
-                Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
-                startActivity(intent);
+            public void run() {
+                if(sp.getString(ConstantSp.USERID,"").equals("")){
+                    Intent intent = new Intent(SplashActivity.this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else{
+                    Intent intent = new Intent(SplashActivity.this,DashboardActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
-        });
+        },3000);
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-        finishAffinity();
     }
 }

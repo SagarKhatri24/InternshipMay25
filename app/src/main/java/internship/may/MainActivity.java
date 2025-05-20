@@ -1,9 +1,11 @@
 package internship.may;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     EditText email,password;
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     SQLiteDatabase db;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
         db = openOrCreateDatabase("InternshipMay.db",MODE_PRIVATE,null);
 
         String tableQuery = "CREATE TABLE IF NOT EXISTS USERS (USERID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100),EMAIL VARCHAR(100),CONTACT INT(10),PASSWORD VARCHAR(20),GENDER VARCHAR(6),COUNTRY VARCHAR(20))";
@@ -71,6 +75,27 @@ public class MainActivity extends AppCompatActivity {
                     String selectQuery = "SELECT * FROM USERS WHERE EMAIL='"+email.getText().toString()+"' AND PASSWORD='"+password.getText().toString()+"'";
                     Cursor cursor = db.rawQuery(selectQuery,null);
                     if(cursor.getCount()>0) {
+                        while (cursor.moveToNext()){
+                            String sId = cursor.getString(0);
+                            String sName = cursor.getString(1);
+                            String sEmail = cursor.getString(2);
+                            String sContact = cursor.getString(3);
+                            String sPassword = cursor.getString(4);
+                            String sGender = cursor.getString(5);
+                            String sCountry = cursor.getString(6);
+
+                            sp.edit().putString(ConstantSp.USERID,sId).commit();
+                            sp.edit().putString(ConstantSp.NAME,sName).commit();
+                            sp.edit().putString(ConstantSp.EMAIL,sEmail).commit();
+                            sp.edit().putString(ConstantSp.CONTACT,sContact).commit();
+                            sp.edit().putString(ConstantSp.PASSWORD,sPassword).commit();
+                            sp.edit().putString(ConstantSp.GENDER,sGender).commit();
+                            sp.edit().putString(ConstantSp.COUNTRY,sCountry).commit();
+
+                            Log.d("RESPONSE",sId+"\n"+sName+"\n"+sEmail+"\n"+sContact+"\n"+sPassword+"\n"+sGender+"\n"+sCountry);
+
+                        }
+
                         System.out.println("Login Successfully");
                         Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_LONG).show();
                         Snackbar.make(view, "Login Successfully", Snackbar.LENGTH_SHORT).show();
@@ -84,5 +109,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        finishAffinity();
     }
 }

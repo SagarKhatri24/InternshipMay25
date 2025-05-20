@@ -41,6 +41,9 @@ dependencies {
     //Responsive UI
     implementation(libs.sdp)
 
+    //Load GIF/Dynamic Images
+    implementation(libs.glide)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -12,6 +12,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
+
 public class SplashActivity extends AppCompatActivity {
 
     ImageView imageView;
@@ -28,25 +30,30 @@ public class SplashActivity extends AppCompatActivity {
             return insets;
         });
 
-        sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
+        sp = getSharedPreferences(ConstantSp.PREF, MODE_PRIVATE);
 
         imageView = findViewById(R.id.splash_image);
+        Glide
+                .with(SplashActivity.this)
+                .asGif()
+                .load("https://cdn.dribbble.com/userupload/32060265/file/original-a3540107913aef547529adf058fece03.gif")
+                .placeholder(R.drawable.nature)
+                .into(imageView);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(sp.getString(ConstantSp.USERID,"").equals("")){
-                    Intent intent = new Intent(SplashActivity.this,MainActivity.class);
+                if (sp.getString(ConstantSp.USERID, "").equals("")) {
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
-                }
-                else{
-                    Intent intent = new Intent(SplashActivity.this,DashboardActivity.class);
+                } else {
+                    Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
                     startActivity(intent);
                     finish();
                 }
             }
-        },3000);
+        }, 3000);
 
     }
 }

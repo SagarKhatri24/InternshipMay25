@@ -6,6 +6,10 @@
         <item name="android:fontFamily">@font/nunito_medium</item>
     </style>
 
+    <style name="action_bar" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="android:fontFamily">@font/nunito_medium</item>
+    </style>
+
     <style name="bgColor">
         <item name="android:background">@color/black</item>
     </style>

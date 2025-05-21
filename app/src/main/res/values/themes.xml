@@ -8,6 +8,10 @@
 
     <style name="Theme.InternshipMay25" parent="Base.Theme.InternshipMay25" />
 
+    <style name="action_bar" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="android:fontFamily">@font/nunito_medium</item>
+    </style>
+
     <style name="bgColor">
         <item name="android:background">@color/bg_color</item>
     </style>

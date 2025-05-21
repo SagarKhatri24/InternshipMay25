@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println("Login Successfully");
                         Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_LONG).show();
                         Snackbar.make(view, "Login Successfully", Snackbar.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                         startActivity(intent);
                     }
                     else{

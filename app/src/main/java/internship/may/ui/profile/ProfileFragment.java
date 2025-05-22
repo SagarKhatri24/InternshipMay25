@@ -38,7 +38,7 @@ public class ProfileFragment extends Fragment {
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
     SQLiteDatabase db;
-    String sGender,sCountry;
+    String sGender, sCountry;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class ProfileFragment extends Fragment {
 
         sp = getActivity().getSharedPreferences(ConstantSp.PREF, MODE_PRIVATE);
 
-        db = getActivity().openOrCreateDatabase("InternshipMay.db",MODE_PRIVATE,null);
+        db = getActivity().openOrCreateDatabase("InternshipMay.db", MODE_PRIVATE, null);
 
         String tableQuery = "CREATE TABLE IF NOT EXISTS USERS (USERID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100),EMAIL VARCHAR(100),CONTACT INT(10),PASSWORD VARCHAR(20),GENDER VARCHAR(6),COUNTRY VARCHAR(20))";
         db.execSQL(tableQuery);
@@ -69,24 +69,23 @@ public class ProfileFragment extends Fragment {
         countryArray.add("Demo");
         countryArray.add("Austrlia");
 
-        countryArray.add(0,"Select Country");
+        countryArray.add(0, "Select Country");
 
         countryArray.remove(5);
-        countryArray.set(5,"Australia");
+        countryArray.set(5, "Australia");
 
-        ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1,countryArray);
+        ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, countryArray);
         adapter.setDropDownViewResource(android.R.layout.simple_list_item_checked);
         binding.profileCountry.setAdapter(adapter);
 
         binding.profileCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i == 0){
+                if (i == 0) {
                     sCountry = "";
-                }
-                else {
+                } else {
                     sCountry = countryArray.get(i);
-                    Toast.makeText(getActivity(), sCountry , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), sCountry, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -99,44 +98,43 @@ public class ProfileFragment extends Fragment {
         binding.profileUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(binding.profileName.getText().toString().trim().equals("")){
+                if (binding.profileName.getText().toString().trim().equals("")) {
                     binding.profileName.setError("Name Required");
-                }
-                else if(binding.profileEmail.getText().toString().trim().equals("")){
+                } else if (binding.profileEmail.getText().toString().trim().equals("")) {
                     binding.profileEmail.setError("Email Required");
-                }
-                else if(!binding.profileEmail.getText().toString().trim().matches(emailPattern)){
+                } else if (!binding.profileEmail.getText().toString().trim().matches(emailPattern)) {
                     binding.profileEmail.setError("Valid Email Id Required");
-                }
-                else if(binding.profileContact.getText().toString().trim().equals("")){
+                } else if (binding.profileContact.getText().toString().trim().equals("")) {
                     binding.profileContact.setError("Contact No. Required");
-                }
-                else if(binding.profileContact.getText().toString().trim().length()<10){
+                } else if (binding.profileContact.getText().toString().trim().length() < 10) {
                     binding.profileContact.setError("Valid Contact No. Required");
-                }
-                else if(binding.profilePassword.getText().toString().trim().equals("")){
+                } else if (binding.profilePassword.getText().toString().trim().equals("")) {
                     binding.profilePassword.setError("Password Required");
-                }
-                else if(binding.profilePassword.getText().toString().trim().length()<6){
+                } else if (binding.profilePassword.getText().toString().trim().length() < 6) {
                     binding.profilePassword.setError("Min. 6 Char Password Required");
-                }
-                else if(binding.profileConfirmPassword.getText().toString().trim().equals("")){
+                } else if (binding.profileConfirmPassword.getText().toString().trim().equals("")) {
                     binding.profileConfirmPassword.setError("Confirm Password Required");
-                }
-                else if(binding.profileConfirmPassword.getText().toString().trim().length()<6){
+                } else if (binding.profileConfirmPassword.getText().toString().trim().length() < 6) {
                     binding.profileConfirmPassword.setError("Min. 6 Char Confirm Password Required");
-                }
-                else if(!binding.profileConfirmPassword.getText().toString().trim().matches(binding.profilePassword.getText().toString().trim())){
+                } else if (!binding.profileConfirmPassword.getText().toString().trim().matches(binding.profilePassword.getText().toString().trim())) {
                     binding.profileConfirmPassword.setError("Password Does Not Match");
-                }
-                else if(binding.profileGender.getCheckedRadioButtonId() == -1){
+                } else if (binding.profileGender.getCheckedRadioButtonId() == -1) {
                     Toast.makeText(getActivity(), "Please Select Gender", Toast.LENGTH_SHORT).show();
-                }
-                else if(binding.profileCountry.getSelectedItemPosition()<=0){
+                } else if (binding.profileCountry.getSelectedItemPosition() <= 0) {
                     Toast.makeText(getActivity(), "Please Select Country", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
+                    String updateQuery = "UPDATE USERS SET NAME='"+binding.profileName.getText().toString()+"',EMAIL='"+binding.profileEmail.getText().toString()+"',CONTACT='"+binding.profileContact.getText().toString()+"',PASSWORD='"+binding.profilePassword.getText().toString()+"',GENDER='"+sGender+"',COUNTRY='"+sCountry+"' WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"'";
+                    db.execSQL(updateQuery);
+                    Toast.makeText(getActivity(), "Profile Update Successfully", Toast.LENGTH_SHORT).show();
 
+                    sp.edit().putString(ConstantSp.NAME,binding.profileName.getText().toString()).commit();
+                    sp.edit().putString(ConstantSp.EMAIL,binding.profileEmail.getText().toString()).commit();
+                    sp.edit().putString(ConstantSp.CONTACT,binding.profileContact.getText().toString()).commit();
+                    sp.edit().putString(ConstantSp.PASSWORD,binding.profilePassword.getText().toString()).commit();
+                    sp.edit().putString(ConstantSp.GENDER,sGender).commit();
+                    sp.edit().putString(ConstantSp.COUNTRY,sCountry).commit();
+
+                    setData(false);
                 }
             }
         });
@@ -178,30 +176,85 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        setData();
+        setData(false);
+
+        binding.profileEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setData(true);
+            }
+        });
+
+        binding.profileDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Delete Account");
+                builder.setIcon(R.mipmap.ic_launcher);
+                builder.setMessage("Are you sure want to delete account?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String deleteQuery = "DELETE FROM USERS WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"'";
+                        db.execSQL(deleteQuery);
+                        Toast.makeText(getActivity(), "Account Deleted Successfully", Toast.LENGTH_SHORT).show();
+                        sp.edit().clear().commit();
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                builder.show();
+
+            }
+        });
 
         return root;
     }
 
-    private void setData() {
-        binding.profileName.setText(sp.getString(ConstantSp.NAME,""));
-        binding.profileEmail.setText(sp.getString(ConstantSp.EMAIL,""));
-        binding.profileContact.setText(sp.getString(ConstantSp.CONTACT,""));
-        binding.profilePassword.setText(sp.getString(ConstantSp.PASSWORD,""));
-        binding.profileConfirmPassword.setText(sp.getString(ConstantSp.PASSWORD,""));
-
-        sGender = sp.getString(ConstantSp.GENDER,"");
-        if(sGender.equalsIgnoreCase("Male")){
-            binding.profileMale.setChecked(true);
+    private void setData(boolean b) {
+        if (b) {
+            binding.profileConfirmPassword.setVisibility(View.VISIBLE);
+            binding.profileUpdate.setVisibility(View.VISIBLE);
+            binding.profileEdit.setVisibility(View.GONE);
+        } else {
+            binding.profileConfirmPassword.setVisibility(View.GONE);
+            binding.profileUpdate.setVisibility(View.GONE);
+            binding.profileEdit.setVisibility(View.VISIBLE);
         }
-        else if(sGender.equalsIgnoreCase("Female")){
+
+        binding.profileName.setEnabled(b);
+        binding.profileEmail.setEnabled(b);
+        binding.profileContact.setEnabled(b);
+        binding.profilePassword.setEnabled(b);
+        binding.profileMale.setEnabled(b);
+        binding.profileFemale.setEnabled(b);
+        binding.profileCountry.setEnabled(b);
+
+        binding.profileName.setText(sp.getString(ConstantSp.NAME, ""));
+        binding.profileEmail.setText(sp.getString(ConstantSp.EMAIL, ""));
+        binding.profileContact.setText(sp.getString(ConstantSp.CONTACT, ""));
+        binding.profilePassword.setText(sp.getString(ConstantSp.PASSWORD, ""));
+        binding.profileConfirmPassword.setText(sp.getString(ConstantSp.PASSWORD, ""));
+
+        sGender = sp.getString(ConstantSp.GENDER, "");
+        if (sGender.equalsIgnoreCase("Male")) {
+            binding.profileMale.setChecked(true);
+        } else if (sGender.equalsIgnoreCase("Female")) {
             binding.profileFemale.setChecked(true);
         }
 
-        sCountry = sp.getString(ConstantSp.COUNTRY,"");
+        sCountry = sp.getString(ConstantSp.COUNTRY, "");
         int iCountryIndex = 0;
-        for(int i=0;i<countryArray.size();i++){
-            if(countryArray.get(i).equalsIgnoreCase(sCountry)){
+        for (int i = 0; i < countryArray.size(); i++) {
+            if (countryArray.get(i).equalsIgnoreCase(sCountry)) {
                 iCountryIndex = i;
                 break;
             }

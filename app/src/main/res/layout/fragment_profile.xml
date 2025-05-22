@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <EditText
@@ -74,13 +74,26 @@
             android:layout_marginTop="10sp" />
 
         <Button
+            android:id="@+id/profile_edit"
+            style="@style/button_16"
+            android:text="Edit Profile" />
+
+        <Button
             android:id="@+id/profile_update"
             style="@style/button_16"
-            android:text="Update Profile" />
+            android:text="Update Profile"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/profile_logout"
             style="@style/button_16"
             android:text="Logout" />
+
+        <Button
+            android:id="@+id/profile_delete"
+            style="@style/button_16"
+            android:background="@drawable/custom_button_red"
+            android:text="Delete Account" />
+
     </LinearLayout>
 </ScrollView>

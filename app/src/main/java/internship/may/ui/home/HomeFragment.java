@@ -20,7 +20,7 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
-    String[] nameArray = {"Kilos","Mobiles","Fashion","Electronics","Home & Furniture","Appliances","Flight Bookings","Beauty, Toys & More","Two Wheelers"};
+    String[] nameArray = {"Kilos", "Mobiles", "Fashion", "Electronics", "Home & Furniture", "Appliances", "Flight Bookings", "Beauty, Toys & More", "Two Wheelers"};
     String[] imageArray = {
             "https://rukminim2.flixcart.com/flap/80/80/image/29327f40e9c4d26b.png?q=100",
             "https://rukminim2.flixcart.com/flap/80/80/image/22fddf3c7da4c4f4.png?q=100",
@@ -35,29 +35,99 @@ public class HomeFragment extends Fragment {
 
     ArrayList<CategoryList> arrayList;
 
+    String[] productNameArray = {
+            "AASHIRVAAD Shudh Chakki Atta (Akha Ghauno Lot)",
+            "Amul Pure Ghee Ghee Plastic Bottle",
+            "OM KAJU Budget Cashews",
+            "FORTUNE Everyday Basmati Rice (Basmati Chokha)",
+            "Classic Cumin Seeds by Flipkart Grocery"
+    };
+    String[] productImageArray = {
+            "https://rukminim2.flixcart.com/image/280/280/xif0q/flour/j/n/v/-original-imagm7w8jfn29hp2.jpeg?q=70",
+            "https://rukminim2.flixcart.com/image/280/280/kkec4280/ghee/1/x/b/1-ghee-12x1-ltr-pet-jar-mason-jar-amul-original-imafzqv6gggbhygv.jpeg?q=70",
+            "https://rukminim2.flixcart.com/image/280/280/xif0q/nut-dry-fruit/4/o/1/500-budget-cashew-1-pouch-om-kaju-original-imagr7wfwjmrztjp.jpeg?q=70",
+            "https://rukminim2.flixcart.com/image/280/280/kqidx8w0/rice/v/b/l/white-everyday-na-basmati-rice-vacuum-pack-fortune-original-imag4gb3wahjk9yw.jpeg?q=70",
+            "https://rukminim2.flixcart.com/image/280/280/kwtkxow0/spice-masala/e/l/v/-original-imag9euhnetnup9c.jpeg?q=70"
+    };
+    String[] productOldPriceArray = {
+            "542",
+            "660",
+            "600",
+            "845",
+            "280"
+    };
+    String[] productNewPriceArray = {
+            "463",
+            "596",
+            "426",
+            "845",
+            "169"
+    };
+    String[] productDiscountArray = {
+            "14",
+            "9",
+            "28",
+            "0",
+            "39"
+    };
+    String[] productUnitArray = {
+            "10 KG",
+            "1 L Bottle",
+            "500 g",
+            "5 kg",
+            "500 g"
+    };
+
+    ArrayList<ProductList> productArrayList;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        categoryData(root);
+
+        productData(root);
+
+        return root;
+    }
+
+    private void productData(View root) {
+        binding.homeProduct.setLayoutManager(new LinearLayoutManager(getActivity()));
+        binding.homeProduct.setNestedScrollingEnabled(false);
+
+        productArrayList = new ArrayList<>();
+        for(int i=0;i<productNameArray.length;i++){
+            ProductList list = new ProductList();
+            list.setName(productNameArray[i]);
+            list.setImage(productImageArray[i]);
+            list.setOldPrice(productOldPriceArray[i]);
+            list.setNewPrice(productNewPriceArray[i]);
+            list.setDiscount(productDiscountArray[i]);
+            list.setUnit(productUnitArray[i]);
+            productArrayList.add(list);
+        }
+        ProductAdapter adapter = new ProductAdapter(getActivity(),productArrayList);
+        binding.homeProduct.setAdapter(adapter);
+    }
+
+    private void categoryData(View root) {
         //binding.homeCategoryRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         //binding.homeCategoryRecycler.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
 
-        binding.homeCategoryRecycler.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
+        binding.homeCategoryRecycler.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
 
         arrayList = new ArrayList<>();
-        for(int i=0;i<nameArray.length;i++){
+        for (int i = 0; i < nameArray.length; i++) {
             CategoryList list = new CategoryList();
             list.setName(nameArray[i]);
             list.setImage(imageArray[i]);
             arrayList.add(list);
         }
-        CategoryAdapter adapter = new CategoryAdapter(getActivity(),arrayList);
+        CategoryAdapter adapter = new CategoryAdapter(getActivity(), arrayList);
         binding.homeCategoryRecycler.setAdapter(adapter);
-
-        return root;
     }
 
     @Override

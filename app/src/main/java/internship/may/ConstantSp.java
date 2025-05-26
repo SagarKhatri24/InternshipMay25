@@ -12,4 +12,7 @@ public class ConstantSp {
     public static final String GENDER = "gender";
     public static final String COUNTRY = "country";
 
+    public static final String PRICE_SYMBOL = "₹";
+    public static final String PERCENTAGE_OFF = "% off";
+
 }

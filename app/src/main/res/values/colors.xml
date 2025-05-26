@@ -8,4 +8,6 @@
     <color name="bg_color">#EDEDED</color>
     <color name="white_70">#B3FFFFFF</color>
     <color name="red">#F44336</color>
+    <color name="green">#25A541</color>
+    <color name="blue1">#2874F0</color>
 </resources>

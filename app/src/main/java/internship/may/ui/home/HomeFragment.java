@@ -78,6 +78,14 @@ public class HomeFragment extends Fragment {
             "500 g"
     };
 
+    String[] productDescArray = {
+            "Aashirvaad Atta with Multigrains is made with 6 nutritious grains - wheat, maize, oats, soya, channa and psyllium husk. This unique grain blend helps in maintaining normal digestion due to its high fibre content. This multigrain atta also is a source of many essential nutrients. It is high in protein which contributes to the maintenance of muscle mass. It is a source of Vitamin B1 (Thiamine) which contributes to normal nerve and heart function. It also has iron which aids in the formation of haemoglobin. The nutrition benefits are not the only reason to switch to this multigrain flour. Aashirvaad understands the importance of taste and hence makes no compromise on that front as well. Behind every Aashirvaad pack are the Aashirvaad experts who've made the atta with extra care. The careful selection of grains and its proportions in the flour results in the rotis being soft, tasty and fluffy!",
+            "Amul Pure Ghee is a vegetarian product made from fresh cream, characterized by a rich aroma and granular texture. It's a good source of energy, vitamins A, D, E, and K, and is often used for various culinary purposes and traditional Ayurvedic practices.",
+            "Cashew nuts, are a popular and nutritious dry fruit, widely consumed as a snack, in cooking, and in confectionery. They are known for their kidney-shaped kernel, which is attached to a fleshy, edible structure called the cashew apple. Cashews are a good source of vitamins (E, K, and B6), minerals (phosphorous, zinc, magnesium), and heart-healthy fats, contributing to various health benefits, according to 1mg",
+            "Basmati rice is a type of long-grain aromatic rice, known for its distinct nutty flavor, floral aroma, and fluffy texture when cooked. It's a staple in Indian and Pakistani cuisine, popular for its use in dishes like biryani and rice pilaf.",
+            "Classic cumin seeds, also known as Jeera, are small, oval, yellowish-brown seeds with a distinctive earthy, warm, and slightly nutty flavor. They are a key ingredient in many cuisines, particularly Indian, Middle Eastern, and Latin American. Cumin seeds are rich in iron and have various culinary and medicinal benefits."
+    };
+
     ArrayList<ProductList> productArrayList;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -106,6 +114,7 @@ public class HomeFragment extends Fragment {
             list.setNewPrice(productNewPriceArray[i]);
             list.setDiscount(productDiscountArray[i]);
             list.setUnit(productUnitArray[i]);
+            list.setDescription(productDescArray[i]);
             productArrayList.add(list);
         }
         ProductAdapter adapter = new ProductAdapter(getActivity(),productArrayList);
@@ -126,7 +135,7 @@ public class HomeFragment extends Fragment {
             list.setImage(imageArray[i]);
             arrayList.add(list);
         }
-        CategoryAdapter adapter = new CategoryAdapter(getActivity(), arrayList);
+        CategoryAdapter adapter = new CategoryAdapter(getActivity(), arrayList,"Category");
         binding.homeCategoryRecycler.setAdapter(adapter);
     }
 

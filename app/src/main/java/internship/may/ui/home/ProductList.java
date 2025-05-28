@@ -2,7 +2,7 @@ package internship.may.ui.home;
 
 public class ProductList {
 
-    String name,image,oldPrice,newPrice,discount,unit;
+    String name,image,oldPrice,newPrice,discount,unit,description;
 
     public String getName() {
         return name;
@@ -50,5 +50,13 @@ public class ProductList {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

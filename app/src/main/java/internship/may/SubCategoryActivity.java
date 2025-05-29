@@ -1,6 +1,11 @@
 package internship.may;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +15,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 import internship.may.ui.home.CategoryAdapter;
@@ -18,6 +25,17 @@ import internship.may.ui.home.CategoryList;
 public class SubCategoryActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
+    int[] subCategoryIdArray = {1,2,3,4,5,6,7};
+    int[] categoryIdArray = {
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+    };
+
     String[] kilosNameArray = {
             "Staples",
             "Snacks & Beverages",
@@ -39,6 +57,8 @@ public class SubCategoryActivity extends AppCompatActivity {
     };
 
     ArrayList<CategoryList> arrayList;
+    SharedPreferences sp;
+    ImageView defaultImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,18 +71,40 @@ public class SubCategoryActivity extends AppCompatActivity {
             return insets;
         });
 
+        sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
+
+        defaultImage = findViewById(R.id.sub_category_image);
+        Glide
+                .with(SubCategoryActivity.this)
+                .load("https://cdn.dribbble.com/userupload/20939313/file/original-4f28ca50cef0c3d6068d504eb1adb77b.gif")
+                .placeholder(R.mipmap.ic_launcher)
+                .into(defaultImage);
+
         recyclerView = findViewById(R.id.sub_category_recycler);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
 
         arrayList = new ArrayList<>();
         for (int i = 0; i < kilosNameArray.length; i++) {
-            CategoryList list = new CategoryList();
-            list.setName(kilosNameArray[i]);
-            list.setImage(kilosImageArray[i]);
-            arrayList.add(list);
+            if(sp.getInt(ConstantSp.CATEGORY_ID,0) == categoryIdArray[i]) {
+                CategoryList list = new CategoryList();
+                list.setSubCategoryId(subCategoryIdArray[i]);
+                list.setCategoryId(categoryIdArray[i]);
+                list.setName(kilosNameArray[i]);
+                list.setImage(kilosImageArray[i]);
+                arrayList.add(list);
+            }
         }
         CategoryAdapter adapter = new CategoryAdapter(SubCategoryActivity.this, arrayList,"SubCategory");
         recyclerView.setAdapter(adapter);
+
+        if(arrayList.size()>0){
+            recyclerView.setVisibility(VISIBLE);
+            defaultImage.setVisibility(GONE);
+        }
+        else{
+            recyclerView.setVisibility(GONE);
+            defaultImage.setVisibility(VISIBLE);
+        }
 
     }
 }

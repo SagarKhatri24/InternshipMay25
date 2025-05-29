@@ -3,6 +3,23 @@ package internship.may.ui.home;
 public class ProductList {
 
     String name,image,oldPrice,newPrice,discount,unit,description;
+    int productId,subCategoryId;
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+
+    public int getSubCategoryId() {
+        return subCategoryId;
+    }
+
+    public void setSubCategoryId(int subCategoryId) {
+        this.subCategoryId = subCategoryId;
+    }
 
     public String getName() {
         return name;

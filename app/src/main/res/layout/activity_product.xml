@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SubCategoryActivity">
+    android:orientation="vertical"
+    tools:context=".ProductActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:visibility="gone"
-        android:id="@+id/sub_category_recycler"
+        android:id="@+id/product_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <ImageView
         android:visibility="gone"
-        android:id="@+id/sub_category_image"
+        android:id="@+id/product_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-</RelativeLayout>
+</LinearLayout>

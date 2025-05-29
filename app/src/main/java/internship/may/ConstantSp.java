@@ -23,4 +23,7 @@ public class ConstantSp {
     public static final String PRODUCT_IMAGE = "product_image";
     public static final String PRODUCT_DESCRIPTION = "product_description";
 
+    public static final String CATEGORY_ID = "category_id";
+    public static final String SUB_CATEGORY_ID = "sub_category_id";
+
 }

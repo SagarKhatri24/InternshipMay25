@@ -1,40 +1,28 @@
-package internship.may.ui.home;
+package internship.may;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-import internship.may.databinding.FragmentHomeBinding;
+import internship.may.ui.home.ProductAdapter;
+import internship.may.ui.home.ProductList;
 
-public class HomeFragment extends Fragment {
-
-    private FragmentHomeBinding binding;
-
-    int[] idArray = {1,2,3,4,5,6,7,8,9};
-    String[] nameArray = {"Kilos", "Mobiles", "Fashion", "Electronics", "Home & Furniture", "Appliances", "Flight Bookings", "Beauty, Toys & More", "Two Wheelers"};
-    String[] imageArray = {
-            "https://rukminim2.flixcart.com/flap/80/80/image/29327f40e9c4d26b.png?q=100",
-            "https://rukminim2.flixcart.com/flap/80/80/image/22fddf3c7da4c4f4.png?q=100",
-            "https://rukminim2.flixcart.com/fk-p-flap/80/80/image/0d75b34f7d8fbcb3.png?q=100",
-            "https://rukminim2.flixcart.com/flap/80/80/image/69c6589653afdb9a.png?q=100",
-            "https://rukminim2.flixcart.com/flap/80/80/image/ab7e2b022a4587dd.jpg?q=100",
-            "https://rukminim2.flixcart.com/fk-p-flap/80/80/image/0139228b2f7eb413.jpg?q=100",
-            "https://rukminim2.flixcart.com/flap/80/80/image/71050627a56b4693.png?q=100",
-            "https://rukminim2.flixcart.com/flap/80/80/image/dff3f7adcf3a90c6.png?q=100",
-            "https://rukminim2.flixcart.com/fk-p-flap/80/80/image/05d708653beff580.png?q=100"
-    };
-
-    ArrayList<CategoryList> arrayList;
+public class ProductActivity extends AppCompatActivity {
 
     int[] productIdArray = {
             1,2,3,4,5
@@ -100,64 +88,60 @@ public class HomeFragment extends Fragment {
     };
 
     ArrayList<ProductList> productArrayList;
+    RecyclerView recyclerView;
+    SharedPreferences sp;
+    ImageView defaultImage;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_product);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
 
-        categoryData(root);
+        defaultImage = findViewById(R.id.product_image);
+        Glide
+                .with(ProductActivity.this)
+                .load("https://jalongi.com/public/assets/images/product_not_found.jpeg")
+                .placeholder(R.mipmap.ic_launcher)
+                .into(defaultImage);
 
-        productData(root);
-
-        return root;
-    }
-
-    private void productData(View root) {
-        binding.homeProduct.setLayoutManager(new LinearLayoutManager(getActivity()));
-        binding.homeProduct.setNestedScrollingEnabled(false);
+        recyclerView = findViewById(R.id.product_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(ProductActivity.this));
 
         productArrayList = new ArrayList<>();
         for(int i=0;i<productNameArray.length;i++){
-            ProductList list = new ProductList();
-            list.setProductId(productIdArray[i]);
-            list.setSubCategoryId(subCategoryIdArray[i]);
-            list.setName(productNameArray[i]);
-            list.setImage(productImageArray[i]);
-            list.setOldPrice(productOldPriceArray[i]);
-            list.setNewPrice(productNewPriceArray[i]);
-            list.setDiscount(productDiscountArray[i]);
-            list.setUnit(productUnitArray[i]);
-            list.setDescription(productDescArray[i]);
-            productArrayList.add(list);
+            if(sp.getInt(ConstantSp.SUB_CATEGORY_ID,0) == subCategoryIdArray[i]) {
+                ProductList list = new ProductList();
+                list.setProductId(productIdArray[i]);
+                list.setSubCategoryId(subCategoryIdArray[i]);
+                list.setName(productNameArray[i]);
+                list.setImage(productImageArray[i]);
+                list.setOldPrice(productOldPriceArray[i]);
+                list.setNewPrice(productNewPriceArray[i]);
+                list.setDiscount(productDiscountArray[i]);
+                list.setUnit(productUnitArray[i]);
+                list.setDescription(productDescArray[i]);
+                productArrayList.add(list);
+            }
         }
-        ProductAdapter adapter = new ProductAdapter(getActivity(),productArrayList);
-        binding.homeProduct.setAdapter(adapter);
-    }
+        ProductAdapter adapter = new ProductAdapter(ProductActivity.this,productArrayList);
+        recyclerView.setAdapter(adapter);
 
-    private void categoryData(View root) {
-        //binding.homeCategoryRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        //binding.homeCategoryRecycler.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
-
-        binding.homeCategoryRecycler.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
-
-        arrayList = new ArrayList<>();
-        for (int i = 0; i < nameArray.length; i++) {
-            CategoryList list = new CategoryList();
-            list.setCategoryId(idArray[i]);
-            list.setName(nameArray[i]);
-            list.setImage(imageArray[i]);
-            arrayList.add(list);
+        if(productArrayList.size()>0){
+            recyclerView.setVisibility(VISIBLE);
+            defaultImage.setVisibility(GONE);
         }
-        CategoryAdapter adapter = new CategoryAdapter(getActivity(), arrayList,"Category");
-        binding.homeCategoryRecycler.setAdapter(adapter);
-    }
+        else{
+            recyclerView.setVisibility(GONE);
+            defaultImage.setVisibility(VISIBLE);
+        }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
     }
 }

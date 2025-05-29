@@ -3,6 +3,7 @@ package internship.may;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +17,7 @@ import com.bumptech.glide.Glide;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
-    TextView name,newPrice,oldPrice,discount,unit,description;
+    TextView name,newPrice,oldPrice,discount,unit,description,buyNow;
     ImageView imageView;
 
     SharedPreferences sp;
@@ -37,6 +38,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         imageView = findViewById(R.id.product_detail_image);
         description = findViewById(R.id.product_detail_description);
 
+        buyNow = findViewById(R.id.product_detail_buy_now);
+
         name.setText(sp.getString(ConstantSp.PRODUCT_NAME,""));
         newPrice.setText(ConstantSp.PRICE_SYMBOL+sp.getString(ConstantSp.PRODUCT_NEW_PRICE,""));
         oldPrice.setText(ConstantSp.PRICE_SYMBOL+sp.getString(ConstantSp.PRODUCT_OLD_PRICE,""));
@@ -47,6 +50,13 @@ public class ProductDetailActivity extends AppCompatActivity {
         description.setText(sp.getString(ConstantSp.PRODUCT_DESCRIPTION,""));
 
         Glide.with(ProductDetailActivity.this).load(sp.getString(ConstantSp.PRODUCT_IMAGE,"")).placeholder(R.mipmap.ic_launcher).into(imageView);
+
+        buyNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
     }
 }

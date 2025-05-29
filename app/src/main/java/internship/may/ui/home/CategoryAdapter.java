@@ -1,7 +1,10 @@
 package internship.may.ui.home;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,8 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+import internship.may.ConstantSp;
+import internship.may.ProductActivity;
 import internship.may.R;
 import internship.may.SubCategoryActivity;
 
@@ -24,11 +29,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyHold
     Context context;
     ArrayList<CategoryList> arrayList;
     String sType;
+    SharedPreferences sp;
 
     public CategoryAdapter(Context context, ArrayList<CategoryList> arrayList,String sType) {
         this.context = context;
         this.arrayList = arrayList;
         this.sType = sType;
+        sp = context.getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
     }
 
     @NonNull
@@ -66,11 +73,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyHold
             @Override
             public void onClick(View view) {
                 if(sType.equalsIgnoreCase("Category")) {
+                    sp.edit().putInt(ConstantSp.CATEGORY_ID,arrayList.get(position).getCategoryId()).commit();
                     Intent intent = new Intent(context, SubCategoryActivity.class);
                     context.startActivity(intent);
                 }
                 else if(sType.equalsIgnoreCase("SubCategory")){
-
+                    sp.edit().putInt(ConstantSp.SUB_CATEGORY_ID,arrayList.get(position).getSubCategoryId()).commit();
+                    Intent intent = new Intent(context, ProductActivity.class);
+                    context.startActivity(intent);
                 }
                 else{
 

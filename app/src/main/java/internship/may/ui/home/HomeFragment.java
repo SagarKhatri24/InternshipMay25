@@ -1,5 +1,8 @@
 package internship.may.ui.home;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +23,7 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
-    int[] idArray = {1,2,3,4,5,6,7,8,9};
+    /*int[] idArray = {1,2,3,4,5,6,7,8,9};
     String[] nameArray = {"Kilos", "Mobiles", "Fashion", "Electronics", "Home & Furniture", "Appliances", "Flight Bookings", "Beauty, Toys & More", "Two Wheelers"};
     String[] imageArray = {
             "https://rukminim2.flixcart.com/flap/80/80/image/29327f40e9c4d26b.png?q=100",
@@ -32,12 +35,12 @@ public class HomeFragment extends Fragment {
             "https://rukminim2.flixcart.com/flap/80/80/image/71050627a56b4693.png?q=100",
             "https://rukminim2.flixcart.com/flap/80/80/image/dff3f7adcf3a90c6.png?q=100",
             "https://rukminim2.flixcart.com/fk-p-flap/80/80/image/05d708653beff580.png?q=100"
-    };
+    };*/
 
     ArrayList<CategoryList> arrayList;
 
-    int[] productIdArray = {
-            1,2,3,4,5
+    /*int[] productIdArray = {
+            1, 2, 3, 4, 5
     };
 
     int[] subCategoryIdArray = {
@@ -97,15 +100,31 @@ public class HomeFragment extends Fragment {
             "Cashew nuts, are a popular and nutritious dry fruit, widely consumed as a snack, in cooking, and in confectionery. They are known for their kidney-shaped kernel, which is attached to a fleshy, edible structure called the cashew apple. Cashews are a good source of vitamins (E, K, and B6), minerals (phosphorous, zinc, magnesium), and heart-healthy fats, contributing to various health benefits, according to 1mg",
             "Basmati rice is a type of long-grain aromatic rice, known for its distinct nutty flavor, floral aroma, and fluffy texture when cooked. It's a staple in Indian and Pakistani cuisine, popular for its use in dishes like biryani and rice pilaf.",
             "Classic cumin seeds, also known as Jeera, are small, oval, yellowish-brown seeds with a distinctive earthy, warm, and slightly nutty flavor. They are a key ingredient in many cuisines, particularly Indian, Middle Eastern, and Latin American. Cumin seeds are rich in iron and have various culinary and medicinal benefits."
-    };
+    };*/
 
     ArrayList<ProductList> productArrayList;
+
+    SQLiteDatabase db;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        db = getActivity().openOrCreateDatabase("InternshipMay.db", Context.MODE_PRIVATE, null);
+
+        String tableQuery = "CREATE TABLE IF NOT EXISTS USERS (USERID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100),EMAIL VARCHAR(100),CONTACT INT(10),PASSWORD VARCHAR(20),GENDER VARCHAR(6),COUNTRY VARCHAR(20))";
+        db.execSQL(tableQuery);
+
+        String categoryTableQuery = "CREATE TABLE IF NOT EXISTS CATEGORY (CATEGORYID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100),IMAGE VARCHAR(255))";
+        db.execSQL(categoryTableQuery);
+
+        String subCategoryTableQuery = "CREATE TABLE IF NOT EXISTS SUBCATEGORY (SUBCATEGORYID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORYID VARCHAR(10),NAME VARCHAR(100),IMAGE VARCHAR(255))";
+        db.execSQL(subCategoryTableQuery);
+
+        String productTableQuery = "CREATE TABLE IF NOT EXISTS PRODUCT (PRODUCTID INTEGER PRIMARY KEY AUTOINCREMENT,SUBCATEGORYID VARCHAR(10), NAME VARCHAR(100),IMAGE VARCHAR(255), OLDPRICE VARCHAR(10),NEWPRICE VARCHAR(10),DISCOUNT VARCHAR(20),UNIT VARCHAR(20),DESCRIPTION TEXT)";
+        db.execSQL(productTableQuery);
 
         categoryData(root);
 
@@ -119,21 +138,27 @@ public class HomeFragment extends Fragment {
         binding.homeProduct.setNestedScrollingEnabled(false);
 
         productArrayList = new ArrayList<>();
-        for(int i=0;i<productNameArray.length;i++){
-            ProductList list = new ProductList();
-            list.setProductId(productIdArray[i]);
-            list.setSubCategoryId(subCategoryIdArray[i]);
-            list.setName(productNameArray[i]);
-            list.setImage(productImageArray[i]);
-            list.setOldPrice(productOldPriceArray[i]);
-            list.setNewPrice(productNewPriceArray[i]);
-            list.setDiscount(productDiscountArray[i]);
-            list.setUnit(productUnitArray[i]);
-            list.setDescription(productDescArray[i]);
-            productArrayList.add(list);
+
+        String selectQuery = "SELECT * FROM PRODUCT";
+        Cursor cursor = db.rawQuery(selectQuery,null);
+        if(cursor.getCount()>0){
+            while (cursor.moveToNext()){
+                ProductList list = new ProductList();
+                list.setProductId(Integer.parseInt(cursor.getString(0)));
+                list.setSubCategoryId(Integer.parseInt(cursor.getString(1)));
+                list.setName(cursor.getString(2));
+                list.setImage(cursor.getString(3));
+                list.setOldPrice(cursor.getString(4));
+                list.setNewPrice(cursor.getString(5));
+                list.setDiscount(cursor.getString(6));
+                list.setUnit(cursor.getString(7));
+                list.setDescription(cursor.getString(8));
+                productArrayList.add(list);
+            }
+            ProductAdapter adapter = new ProductAdapter(getActivity(), productArrayList);
+            binding.homeProduct.setAdapter(adapter);
         }
-        ProductAdapter adapter = new ProductAdapter(getActivity(),productArrayList);
-        binding.homeProduct.setAdapter(adapter);
+
     }
 
     private void categoryData(View root) {
@@ -144,15 +169,19 @@ public class HomeFragment extends Fragment {
         binding.homeCategoryRecycler.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
 
         arrayList = new ArrayList<>();
-        for (int i = 0; i < nameArray.length; i++) {
-            CategoryList list = new CategoryList();
-            list.setCategoryId(idArray[i]);
-            list.setName(nameArray[i]);
-            list.setImage(imageArray[i]);
-            arrayList.add(list);
+        String selectQuery = "SELECT * FROM CATEGORY";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                CategoryList list = new CategoryList();
+                list.setCategoryId(Integer.parseInt(cursor.getString(0)));
+                list.setName(cursor.getString(1));
+                list.setImage(cursor.getString(2));
+                arrayList.add(list);
+            }
+            CategoryAdapter adapter = new CategoryAdapter(getActivity(), arrayList, "Category");
+            binding.homeCategoryRecycler.setAdapter(adapter);
         }
-        CategoryAdapter adapter = new CategoryAdapter(getActivity(), arrayList,"Category");
-        binding.homeCategoryRecycler.setAdapter(adapter);
     }
 
     @Override

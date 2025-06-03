@@ -121,6 +121,9 @@ public class ProductActivity extends AppCompatActivity {
         String productTableQuery = "CREATE TABLE IF NOT EXISTS PRODUCT (PRODUCTID INTEGER PRIMARY KEY AUTOINCREMENT,SUBCATEGORYID VARCHAR(10), NAME VARCHAR(100),IMAGE VARCHAR(255), OLDPRICE VARCHAR(10),NEWPRICE VARCHAR(10),DISCOUNT VARCHAR(20),UNIT VARCHAR(20),DESCRIPTION TEXT)";
         db.execSQL(productTableQuery);
 
+        String wishlistTableQuery = "CREATE TABLE IF NOT EXISTS WISHLIST (WISHLISTID INTEGER PRIMARY KEY AUTOINCREMENT, USERID VARCHAR(10) , PRODUCTID VARCHAR(10))";
+        db.execSQL(wishlistTableQuery);
+
         sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
 
         defaultImage = findViewById(R.id.product_image);
@@ -148,9 +151,19 @@ public class ProductActivity extends AppCompatActivity {
                 list.setDiscount(cursor.getString(6));
                 list.setUnit(cursor.getString(7));
                 list.setDescription(cursor.getString(8));
+
+                String selectWishlistQuery = "SELECT * FROM WISHLIST WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' AND PRODUCTID='"+cursor.getString(0)+"'";
+                Cursor cursorWishlist = db.rawQuery(selectWishlistQuery,null);
+                if(cursorWishlist.getCount()>0){
+                    list.setWishlist(true);
+                }
+                else{
+                    list.setWishlist(false);
+                }
+
                 productArrayList.add(list);
             }
-            ProductAdapter adapter = new ProductAdapter(ProductActivity.this,productArrayList);
+            ProductAdapter adapter = new ProductAdapter(ProductActivity.this,productArrayList, db);
             recyclerView.setAdapter(adapter);
         }
 

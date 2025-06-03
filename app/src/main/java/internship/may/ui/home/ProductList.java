@@ -4,6 +4,15 @@ public class ProductList {
 
     String name,image,oldPrice,newPrice,discount,unit,description;
     int productId,subCategoryId;
+    boolean isWishlist;
+
+    public boolean isWishlist() {
+        return isWishlist;
+    }
+
+    public void setWishlist(boolean wishlist) {
+        isWishlist = wishlist;
+    }
 
     public int getProductId() {
         return productId;

@@ -5,6 +5,7 @@ import static android.content.Context.MODE_PRIVATE;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -29,10 +29,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
     Context context;
     ArrayList<ProductList> arrayList;
     SharedPreferences sp;
+    SQLiteDatabase db;
 
-    public ProductAdapter(Context context, ArrayList<ProductList> productArrayList) {
+    public ProductAdapter(Context context, ArrayList<ProductList> productArrayList, SQLiteDatabase db) {
         this.context = context;
         this.arrayList = productArrayList;
+        this.db = db;
         sp = context.getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
     }
 
@@ -46,7 +48,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
     public class MyHolder extends RecyclerView.ViewHolder {
 
         TextView name,oldPrice,newPrice,discount,unit;
-        ImageView image;
+        ImageView image,wishlist;
 
         public MyHolder(@NonNull View itemView) {
             super(itemView);
@@ -56,6 +58,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
             discount = itemView.findViewById(R.id.custom_product_discount);
             unit = itemView.findViewById(R.id.custom_product_unit);
             image = itemView.findViewById(R.id.custom_product_image);
+            wishlist = itemView.findViewById(R.id.custom_product_wishlist);
         }
     }
 
@@ -71,9 +74,47 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
 
         Glide.with(context).load(arrayList.get(position).getImage()).placeholder(R.mipmap.ic_launcher).into(holder.image);
 
+        if(arrayList.get(position).isWishlist){
+            holder.wishlist.setImageResource(R.drawable.wishlist_fill);
+        }
+        else{
+            holder.wishlist.setImageResource(R.drawable.wishlist_blank);
+        }
+
+        holder.wishlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isWishlist = false;
+                if(arrayList.get(position).isWishlist){
+                    String deletQuery = "DELETE FROM WISHLIST WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' AND PRODUCTID='"+arrayList.get(position).getProductId()+"'";
+                    db.execSQL(deletQuery);
+                    isWishlist = false;
+                }
+                else{
+                    String insertWishlist = "INSERT INTO WISHLIST VALUES(NULL,'" + sp.getString(ConstantSp.USERID, "") + "','" + arrayList.get(position).getProductId() + "')";
+                    db.execSQL(insertWishlist);
+                    isWishlist = true;
+                }
+                ProductList list = new ProductList();
+                list.setProductId(arrayList.get(position).getProductId());
+                list.setSubCategoryId(arrayList.get(position).getSubCategoryId());
+                list.setName(arrayList.get(position).getName());
+                list.setImage(arrayList.get(position).getImage());
+                list.setOldPrice(arrayList.get(position).getOldPrice());
+                list.setNewPrice(arrayList.get(position).getNewPrice());
+                list.setDiscount(arrayList.get(position).getDiscount());
+                list.setUnit(arrayList.get(position).getUnit());
+                list.setDescription(arrayList.get(position).getDescription());
+                list.setWishlist(isWishlist);
+                arrayList.set(position,list);
+                notifyItemChanged(position);
+            }
+        });
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sp.edit().putString(ConstantSp.PRODUCT_ID, String.valueOf(arrayList.get(position).getProductId())).commit();
                 sp.edit().putString(ConstantSp.PRODUCT_NAME,arrayList.get(position).getName()).commit();
                 sp.edit().putString(ConstantSp.PRODUCT_OLD_PRICE,arrayList.get(position).getOldPrice()).commit();
                 sp.edit().putString(ConstantSp.PRODUCT_NEW_PRICE,arrayList.get(position).getNewPrice()).commit();

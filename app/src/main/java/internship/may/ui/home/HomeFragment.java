@@ -1,6 +1,9 @@
 package internship.may.ui.home;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -17,6 +20,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import java.util.ArrayList;
 
+import internship.may.ConstantSp;
 import internship.may.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -105,6 +109,7 @@ public class HomeFragment extends Fragment {
     ArrayList<ProductList> productArrayList;
 
     SQLiteDatabase db;
+    SharedPreferences sp;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -112,7 +117,9 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        db = getActivity().openOrCreateDatabase("InternshipMay.db", Context.MODE_PRIVATE, null);
+        sp = getActivity().getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
+
+        db = getActivity().openOrCreateDatabase("InternshipMay.db", MODE_PRIVATE, null);
 
         String tableQuery = "CREATE TABLE IF NOT EXISTS USERS (USERID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100),EMAIL VARCHAR(100),CONTACT INT(10),PASSWORD VARCHAR(20),GENDER VARCHAR(6),COUNTRY VARCHAR(20))";
         db.execSQL(tableQuery);
@@ -125,6 +132,9 @@ public class HomeFragment extends Fragment {
 
         String productTableQuery = "CREATE TABLE IF NOT EXISTS PRODUCT (PRODUCTID INTEGER PRIMARY KEY AUTOINCREMENT,SUBCATEGORYID VARCHAR(10), NAME VARCHAR(100),IMAGE VARCHAR(255), OLDPRICE VARCHAR(10),NEWPRICE VARCHAR(10),DISCOUNT VARCHAR(20),UNIT VARCHAR(20),DESCRIPTION TEXT)";
         db.execSQL(productTableQuery);
+
+        String wishlistTableQuery = "CREATE TABLE IF NOT EXISTS WISHLIST (WISHLISTID INTEGER PRIMARY KEY AUTOINCREMENT, USERID VARCHAR(10) , PRODUCTID VARCHAR(10))";
+        db.execSQL(wishlistTableQuery);
 
         categoryData(root);
 
@@ -153,9 +163,19 @@ public class HomeFragment extends Fragment {
                 list.setDiscount(cursor.getString(6));
                 list.setUnit(cursor.getString(7));
                 list.setDescription(cursor.getString(8));
+
+                String selectWishlistQuery = "SELECT * FROM WISHLIST WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' AND PRODUCTID='"+cursor.getString(0)+"'";
+                Cursor cursorWishlist = db.rawQuery(selectWishlistQuery,null);
+                if(cursorWishlist.getCount()>0){
+                    list.setWishlist(true);
+                }
+                else{
+                    list.setWishlist(false);
+                }
+
                 productArrayList.add(list);
             }
-            ProductAdapter adapter = new ProductAdapter(getActivity(), productArrayList);
+            ProductAdapter adapter = new ProductAdapter(getActivity(), productArrayList,db);
             binding.homeProduct.setAdapter(adapter);
         }
 

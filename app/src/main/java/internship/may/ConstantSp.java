@@ -15,6 +15,7 @@ public class ConstantSp {
     public static final String PRICE_SYMBOL = "₹";
     public static final String PERCENTAGE_OFF = "% off";
 
+    public static final String PRODUCT_ID = "product_id";
     public static final String PRODUCT_NAME = "product_name";
     public static final String PRODUCT_OLD_PRICE = "product_old_price";
     public static final String PRODUCT_NEW_PRICE = "product_new_price";

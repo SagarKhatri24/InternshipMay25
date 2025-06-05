@@ -117,12 +117,49 @@
                         app:cardElevation="@dimen/_2sdp">
 
                         <TextView
+                            android:id="@+id/product_detail_add_item"
                             style="@style/text_11"
                             android:layout_gravity="center"
                             android:padding="@dimen/_5sdp"
                             android:text="Add Item"
                             android:textColor="@color/blue1"
                             android:textStyle="bold" />
+
+                        <RelativeLayout
+                            android:visibility="gone"
+                            android:id="@+id/product_detail_cart_layout"
+                            android:paddingHorizontal="@dimen/_10sdp"
+                            android:layout_gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_centerVertical="true"
+                                android:src="@drawable/minus"
+                                android:padding="@dimen/_2sdp"
+                                android:id="@+id/product_detail_minus"
+                                android:layout_width="@dimen/_20sdp"
+                                android:layout_height="@dimen/_20sdp"/>
+
+                            <ImageView
+                                android:layout_centerVertical="true"
+                                android:src="@drawable/add"
+                                android:layout_alignParentRight="true"
+                                android:padding="@dimen/_2sdp"
+                                android:id="@+id/product_detail_plus"
+                                android:layout_width="@dimen/_20sdp"
+                                android:layout_height="@dimen/_20sdp"/>
+
+                            <TextView
+                                android:layout_centerVertical="true"
+                                android:id="@+id/product_detail_qty"
+                                android:gravity="center"
+                                android:layout_toRightOf="@id/product_detail_minus"
+                                android:layout_toLeftOf="@id/product_detail_plus"
+                                android:layout_marginHorizontal="@dimen/_10sdp"
+                                style="@style/text_11"/>
+
+                        </RelativeLayout>
 
                     </androidx.cardview.widget.CardView>
 

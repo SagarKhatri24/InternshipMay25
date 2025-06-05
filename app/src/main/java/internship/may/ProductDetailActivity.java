@@ -1,5 +1,8 @@
 package internship.may;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -9,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,10 +35,17 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
     TextView name,newPrice,oldPrice,discount,unit,description,buyNow;
     ImageView imageView,wishlist;
 
+    TextView addItem,qty;
+    ImageView plus,minus;
+    RelativeLayout cartLayout;
+
     SharedPreferences sp;
     SQLiteDatabase db;
 
     boolean isWishlist = false;
+
+    int iQty = 1;
+    int iCartId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +70,9 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
         String wishlistTableQuery = "CREATE TABLE IF NOT EXISTS WISHLIST (WISHLISTID INTEGER PRIMARY KEY AUTOINCREMENT, USERID VARCHAR(10) , PRODUCTID VARCHAR(10))";
         db.execSQL(wishlistTableQuery);
 
+        String cartTableQuery = "CREATE TABLE IF NOT EXISTS CART (CARTID INTEGER PRIMARY KEY AUTOINCREMENT,ORDERID VARCHAR(10), USERID VARCHAR(10), PRODUCTID VARCHAR(10), QTY VARCHAR(10), PRICE VARCHAR(10), TOTALPRICE VARCHAR(10))";
+        db.execSQL(cartTableQuery);
+
         sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
 
         name = findViewById(R.id.product_detail_name);
@@ -71,6 +85,12 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
 
         buyNow = findViewById(R.id.product_detail_buy_now);
         wishlist = findViewById(R.id.product_detail_wishlist);
+
+        addItem = findViewById(R.id.product_detail_add_item);
+        qty = findViewById(R.id.product_detail_qty);
+        plus = findViewById(R.id.product_detail_plus);
+        minus = findViewById(R.id.product_detail_minus);
+        cartLayout = findViewById(R.id.product_detail_cart_layout);
 
         name.setText(sp.getString(ConstantSp.PRODUCT_NAME,""));
         newPrice.setText(ConstantSp.PRICE_SYMBOL+sp.getString(ConstantSp.PRODUCT_NEW_PRICE,""));
@@ -116,6 +136,44 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
                     wishlist.setImageResource(R.drawable.wishlist_fill);
                     isWishlist = true;
                 }
+            }
+        });
+
+        String selectCartQuery = "SELECT * FROM CART WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' AND PRODUCTID='"+sp.getString(ConstantSp.PRODUCT_ID,"")+"' AND ORDERID='0'";
+        Cursor cartCursor = db.rawQuery(selectCartQuery,null);
+        if(cartCursor.getCount()>0){
+            addItem.setVisibility(GONE);
+            cartLayout.setVisibility(VISIBLE);
+            while (cartCursor.moveToNext()){
+                iCartId = Integer.parseInt(cartCursor.getString(0));
+                iQty = Integer.parseInt(cartCursor.getString(4));
+                qty.setText(String.valueOf(iQty));
+            }
+        }
+        else{
+            addItem.setVisibility(VISIBLE);
+            cartLayout.setVisibility(GONE);
+        }
+
+        addItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int iTotaPrice = iQty * Integer.parseInt(sp.getString(ConstantSp.PRODUCT_NEW_PRICE,""));
+                String insertQuery = "INSERT INTO CART VALUES(NULL,'0','"+sp.getString(ConstantSp.USERID,"")+"','"+sp.getString(ConstantSp.PRODUCT_ID,"")+"','"+iQty+"','"+sp.getString(ConstantSp.PRODUCT_NEW_PRICE,"")+"','"+iTotaPrice+"')";
+                db.execSQL(insertQuery);
+
+                String cartNewQuery = "SELECT * FROM CART ORDER BY CARTID DESC LIMIT 1";
+                Cursor cartNewCursor = db.rawQuery(cartNewQuery,null);
+                if(cartNewCursor.getCount()>0){
+                    while (cartNewCursor.moveToNext()){
+                        iCartId = Integer.parseInt(cartNewCursor.getString(0));
+                        Log.d("RESPONSE_CART", String.valueOf(iCartId));
+                    }
+                }
+                qty.setText(String.valueOf(iQty));
+
+                addItem.setVisibility(GONE);
+                cartLayout.setVisibility(VISIBLE);
             }
         });
 

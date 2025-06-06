@@ -177,6 +177,37 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
             }
         });
 
+        plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iQty +=1;
+                int iTotalPrice = iQty * Integer.parseInt(sp.getString(ConstantSp.PRODUCT_NEW_PRICE,""));
+                String updateQuery = "UPDATE CART SET QTY = '"+iQty+"',TOTALPRICE='"+iTotalPrice+"' WHERE CARTID = '"+iCartId+"'";
+                db.execSQL(updateQuery);
+                qty.setText(String.valueOf(iQty));
+            }
+        });
+
+        minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iQty -=1;
+                if(iQty<=0){
+                    String deleteQuery = "DELETE FROM CART WHERE CARTID='"+iCartId+"'";
+                    db.execSQL(deleteQuery);
+
+                    cartLayout.setVisibility(GONE);
+                    addItem.setVisibility(VISIBLE);
+                }
+                else{
+                    int iTotalPrice = iQty * Integer.parseInt(sp.getString(ConstantSp.PRODUCT_NEW_PRICE,""));
+                    String updateQuery = "UPDATE CART SET QTY = '"+iQty+"',TOTALPRICE='"+iTotalPrice+"' WHERE CARTID = '"+iCartId+"'";
+                    db.execSQL(updateQuery);
+                    qty.setText(String.valueOf(iQty));
+                }
+            }
+        });
+
     }
 
     private void startPayment() {

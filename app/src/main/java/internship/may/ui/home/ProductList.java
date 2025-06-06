@@ -3,32 +3,8 @@ package internship.may.ui.home;
 public class ProductList {
 
     String name,image,oldPrice,newPrice,discount,unit,description;
-    int productId,subCategoryId;
+    int productId,subCategoryId,cartId,qty;
     boolean isWishlist;
-
-    public boolean isWishlist() {
-        return isWishlist;
-    }
-
-    public void setWishlist(boolean wishlist) {
-        isWishlist = wishlist;
-    }
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
-    }
-
-    public int getSubCategoryId() {
-        return subCategoryId;
-    }
-
-    public void setSubCategoryId(int subCategoryId) {
-        this.subCategoryId = subCategoryId;
-    }
 
     public String getName() {
         return name;
@@ -84,5 +60,45 @@ public class ProductList {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+
+    public int getSubCategoryId() {
+        return subCategoryId;
+    }
+
+    public void setSubCategoryId(int subCategoryId) {
+        this.subCategoryId = subCategoryId;
+    }
+
+    public int getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(int cartId) {
+        this.cartId = cartId;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
+    public boolean isWishlist() {
+        return isWishlist;
+    }
+
+    public void setWishlist(boolean wishlist) {
+        isWishlist = wishlist;
     }
 }

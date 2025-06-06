@@ -124,6 +124,9 @@ public class ProductActivity extends AppCompatActivity {
         String wishlistTableQuery = "CREATE TABLE IF NOT EXISTS WISHLIST (WISHLISTID INTEGER PRIMARY KEY AUTOINCREMENT, USERID VARCHAR(10) , PRODUCTID VARCHAR(10))";
         db.execSQL(wishlistTableQuery);
 
+        String cartTableQuery = "CREATE TABLE IF NOT EXISTS CART (CARTID INTEGER PRIMARY KEY AUTOINCREMENT,ORDERID VARCHAR(10), USERID VARCHAR(10), PRODUCTID VARCHAR(10), QTY VARCHAR(10), PRICE VARCHAR(10), TOTALPRICE VARCHAR(10))";
+        db.execSQL(cartTableQuery);
+
         sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
 
         defaultImage = findViewById(R.id.product_image);
@@ -159,6 +162,19 @@ public class ProductActivity extends AppCompatActivity {
                 }
                 else{
                     list.setWishlist(false);
+                }
+
+                String selectCartQuery = "SELECT * FROM CART WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' AND PRODUCTID='"+cursor.getString(0)+"' AND ORDERID='0'";
+                Cursor cursorCart = db.rawQuery(selectCartQuery,null);
+                if(cursorCart.getCount()>0){
+                    while (cursorCart.moveToNext()){
+                        list.setCartId(Integer.parseInt(cursorCart.getString(0)));
+                        list.setQty(Integer.parseInt(cursorCart.getString(4)));
+                    }
+                }
+                else{
+                    list.setCartId(0);
+                    list.setQty(0);
                 }
 
                 productArrayList.add(list);

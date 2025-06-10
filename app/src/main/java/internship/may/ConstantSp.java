@@ -27,4 +27,6 @@ public class ConstantSp {
     public static final String CATEGORY_ID = "category_id";
     public static final String SUB_CATEGORY_ID = "sub_category_id";
 
+    public static final String CART_TOTAL = "cart_total";
+
 }

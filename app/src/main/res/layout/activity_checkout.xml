@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    style="@style/bgColor"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".CheckoutActivity">
+
+    <EditText
+        android:id="@+id/checkout_name"
+        style="@style/edit_16"
+        android:hint="Name" />
+
+    <EditText
+        android:id="@+id/checkout_email"
+        style="@style/edit_16"
+        android:hint="Email Id"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/checkout_contact"
+        style="@style/edit_16"
+        android:hint="Contact No."
+        android:inputType="phone"
+        android:maxLength="10" />
+
+    <EditText
+        android:id="@+id/checkout_address"
+        style="@style/edit_16"
+        android:gravity="start"
+        android:hint="Address"
+        android:maxLines="4"
+        android:minLines="2" />
+
+    <Spinner
+        android:id="@+id/checkout_city"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RadioGroup
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:orientation="horizontal"
+        android:id="@+id/checkout_payment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/checkout_cash"
+            android:text="Cash"
+            style="@style/radio_16"/>
+
+        <RadioButton
+            android:id="@+id/checkout_online"
+            android:text="Online"
+            style="@style/radio_16"/>
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/checkout_paynow"
+        android:text="Pay Now"
+        style="@style/button_16"/>
+
+</LinearLayout>

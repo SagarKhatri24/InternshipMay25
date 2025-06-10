@@ -3,6 +3,7 @@ package internship.may;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -87,6 +88,15 @@ public class CartActivity extends AppCompatActivity {
 
         clearCart = findViewById(R.id.cart_clear);
         checkout = findViewById(R.id.cart_checkout);
+
+        checkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sp.edit().putString(ConstantSp.CART_TOTAL, String.valueOf(iTotal)).commit();
+                Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
+                startActivity(intent);
+            }
+        });
 
         dataLayout = findViewById(R.id.cart_data_layout);
 

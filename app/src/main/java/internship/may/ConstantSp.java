@@ -29,4 +29,6 @@ public class ConstantSp {
 
     public static final String CART_TOTAL = "cart_total";
 
+    public static final String BUY_NOW = "buy_now";
+
 }

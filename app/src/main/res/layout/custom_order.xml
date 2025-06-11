@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/_10sdp"
+    android:layout_marginVertical="@dimen/_5sdp"
+    app:cardCornerRadius="@dimen/_5sdp"
+    app:cardElevation="@dimen/_2sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/_5sdp">
+
+        <TextView
+            android:id="@+id/custom_order_no"
+            style="@style/text_13" />
+
+        <TextView
+            android:id="@+id/custom_order_name"
+            style="@style/text_13" />
+
+        <TextView
+            android:id="@+id/custom_order_email"
+            style="@style/text_11" />
+
+        <TextView
+            android:id="@+id/custom_order_contact"
+            style="@style/text_11" />
+
+        <TextView
+            android:id="@+id/custom_order_address"
+            style="@style/text_11" />
+
+        <TextView
+            android:id="@+id/custom_order_city"
+            style="@style/text_11" />
+
+        <TextView
+            android:id="@+id/custom_order_total"
+            style="@style/text_13" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,5 +1,6 @@
 package internship.may;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -22,7 +23,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class CheckoutActivity extends AppCompatActivity {
+import com.razorpay.Checkout;
+import com.razorpay.PaymentData;
+import com.razorpay.PaymentResultWithDataListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class CheckoutActivity extends AppCompatActivity implements PaymentResultWithDataListener {
 
     EditText name,email,contact,address;
     Spinner city;
@@ -137,16 +145,69 @@ public class CheckoutActivity extends AppCompatActivity {
                     Toast.makeText(CheckoutActivity.this, "Please Select City", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    if(sPaymentType.equalsIgnoreCase("Cash")){
-                        doOrder(sPaymentType,"");
+                    if(sp.getString(ConstantSp.BUY_NOW,"").equalsIgnoreCase("")) {
+                        if (sPaymentType.equalsIgnoreCase("Cash")) {
+                            doOrder(sPaymentType, "");
+                        } else {
+                            startPayment();
+                        }
                     }
                     else{
+                        String insertQuery = "INSERT INTO CART VALUES(NULL,'0','"+sp.getString(ConstantSp.USERID,"")+"','"+sp.getString(ConstantSp.PRODUCT_ID,"")+"','1','"+sp.getString(ConstantSp.PRODUCT_NEW_PRICE,"")+"','"+sp.getString(ConstantSp.PRODUCT_NEW_PRICE,"")+"')";
+                        db.execSQL(insertQuery);
+
+                        if (sPaymentType.equalsIgnoreCase("Cash")) {
+                            doOrder(sPaymentType, "");
+                        } else {
+                            startPayment();
+                        }
 
                     }
                 }
             }
         });
 
+    }
+
+    private void startPayment() {
+        Activity activity = this;
+        Checkout co = new Checkout();
+        co.setKeyID("rzp_test_xsiOz9lYtWKHgF");
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("name",getResources().getString(R.string.app_name));
+            jsonObject.put("description","Product Purchase");
+            jsonObject.put("send_sms_hash",true);
+            jsonObject.put("allow_rotation",true);
+            jsonObject.put("image",R.mipmap.ic_launcher);
+            jsonObject.put("currency","INR");
+            jsonObject.put("amount",String.valueOf(Integer.parseInt(sp.getString(ConstantSp.CART_TOTAL,""))*100));
+
+            JSONObject prefill = new JSONObject();
+            prefill.put("email",sp.getString(ConstantSp.EMAIL,""));
+            prefill.put("contact",sp.getString(ConstantSp.CONTACT,""));
+
+            jsonObject.put("prefill",prefill);
+            co.open(activity,jsonObject);
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public void onPaymentSuccess(String s, PaymentData paymentData) {
+        Log.d("RESPONSE_PAYMENT",s);
+        //Toast.makeText(this, "Order Place Successfully", Toast.LENGTH_SHORT).show();
+        doOrder(sPaymentType,s);
+    }
+
+    @Override
+    public void onPaymentError(int i, String s, PaymentData paymentData) {
+        Log.d("RESPONSE_PAYMENT_ERROR",s);
+        Toast.makeText(this, "Order Place Unsuccessfully", Toast.LENGTH_SHORT).show();
     }
 
     private void doOrder(String sPaymentType, String sTransactionId) {
